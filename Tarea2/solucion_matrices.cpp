@@ -23,9 +23,10 @@ void imprime_matriz_diagonal(vector<vector<double>>& matriz)
 	//bla bla bla
 }
 
-vector<double> lee_matriz(string nombreArchivo, int& N, int& M)
+vector<double> lee_matriz_diagonal(string nombreArchivo, int& N, int& M)
 {
 	vector<double> matriz;
+	double auxNum;
 	ifstream entrada (nombreArchivo.c_str());
 
 	if (entrada.is_open())
@@ -34,28 +35,34 @@ vector<double> lee_matriz(string nombreArchivo, int& N, int& M)
   		entrada >> M;
 	  	while (!entrada.eof())
 	  	{
-	  		getline(entrada, linea);
-	  		istringstream iss (linea);
-	  		while(iss >> palabra)
-	  		{
-	  			palabra = quita_caracteres(palabra);
-	  			transform(palabra.begin(), palabra.end(), palabra.begin(), ::tolower);
-
-	  			if (palabra.length() > 3 & find(email.begin(), email.end(), palabra) == email.end())
-	  			{
-	  				email.push_back(palabra);
-	  				palabras.push_back(palabra);
-	  			}
-	  		}
-	  		email.clear();
+	  		entrada >> auxNum;
+	  		matriz.push_back(auxNum);
 	  	}
 	  	entrada.close();
 	}
 	else
   		cout << "ERROR al leer archivo\n";
-  sort(palabras.begin(), palabras.end());
+	
+	return matriz;
+}
 
-  return palabras;
+vector<double> resuelve_sistema_diagonal(vector<double>& matriz, vector<double>& b, int& N)
+{
+	vector<double> x(N);
+	
+	for (int i=0; i < N; i++)
+	{
+		if (matriz[i] != 0)
+		{
+			x[i] = b[i]/matriz[i];
+		}
+		else
+		{
+			cout << "\tERROR. Los elementos de la diagonal contienen ceros\n";
+		}
+	}
+
+	return x;
 }
 
 vector<string> lee_nuevo_email(string nombreArchivo, vector<string>& diccionario)
