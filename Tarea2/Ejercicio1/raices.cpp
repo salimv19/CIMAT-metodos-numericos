@@ -167,30 +167,6 @@ int metodo_biseccion(int& idFuncion, double& xA, double& xB, double& x, double& 
 	return iter;
 }
 
-void imprime_resultados(vector<string>& palabras, vector<double>& probabilidades)
-{
-	string cadena;
-
-	for (int i=0; i < palabras.size(); i++)
-	{
-		cadena.append(" \"");
-		cadena.append(palabras[i]);
-		cadena.append("\"");
-	}
-
-	cout << "P(spam |" << cadena << ") = " << probabilidades[0] << endl;
-	cout << "P(no spam |" << cadena << ") = " << probabilidades[1] << endl;
-
-	if (probabilidades[0] > probabilidades[1])
-	{
-		cout << "\n\tEl e-mail se considera SPAM\n" << endl;
-	}
-	else
-	{
-		cout << "\n\tEl e-mail se considera NO SPAM\n" << endl;
-	}
-}
-
 int main()
 {
 	vector<double> xVec, yVec;
@@ -236,7 +212,7 @@ int main()
 		}
 		case 5:
 		{
-			minX = -0.9;
+			minX = -1.0;
 			maxX = 1.0;
 			xVec.push_back(0.1);
 			break;
@@ -246,14 +222,16 @@ int main()
 	yVec.push_back(evalua_funcion(idFuncion, xVec[0]));
 	iter = metodo_newton_raphson(idFuncion, xVec, yVec, minX, maxX, tolX, tolY, maxIter);
 
-	cout << "METODO DE NEWTON\n";
-	cout << iter << "\n" << xVec[iter] << "\t" << yVec[iter] << endl;
+	cout << "\n\nMETODO DE NEWTON\n";
+	cout << "\nx = " << xVec[iter] << "   \tf(x) = " << yVec[iter] << endl;
+	cout << "ER = " << fabs(xVec[iter]-xVec[iter-1])/fabs(xVec[iter]) << "\titeraciones = " << iter << endl;
 
 	grafica_funcion(idFuncion, minX, maxX, xVec[iter], yVec[iter]);
 
-	cout << "METODO DE BISECCIÓN\n";
+	cout << "\n\nMETODO DE BISECCIÓN\n";
 	iter = metodo_biseccion(idFuncion, minX, maxX, x, tolX, y, tolY, maxIter);
-	cout << iter << "\n" << x << "\t" << y << endl;
+	cout << "\nx = " << x << "   \tf(x) = " << y << endl;
+	cout << "ER = " << fabs(minX-maxX)/fabs(maxX) << "\titeraciones = " << iter << endl;
 
 	return 0;
 }

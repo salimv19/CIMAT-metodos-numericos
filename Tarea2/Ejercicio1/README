@@ -1,0 +1,9 @@
+README
+
+Compilar con:
+g++ -std=c++0x  raices.cpp -o raices
+
+Ejecutar con:
+./raices
+
+Seguir instrucciones del menú

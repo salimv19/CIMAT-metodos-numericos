@@ -20,6 +20,31 @@ void imprime_vector(vector<T>& vec)
 	}
 }
 
+double norma_uno(vector<double>& x)
+{
+	double norma;
+	norma = 0;
+	for (int i=0; i < x.size(); i++)
+	{
+		norma = norma + fabs(x[i]);
+	}
+	return norma;
+}
+
+double norma_infinito(vector<double>& x)
+{
+	double norma;
+	norma = 0;
+	for (int i=0; i < x.size(); i++)
+	{
+		if (fabs(x[i]) > norma)
+		{
+			norma = fabs(x[i]);
+		}
+	}
+	return norma;
+}
+
 void imprime_matriz_diagonal_superior_sparse(vector<vector<double>>& matriz, int& N, int& M)
 {
 	cout << endl;
@@ -420,91 +445,146 @@ vector<int> eliminacion_gaussiana_pivoteo(vector<vector<double>>& matriz, vector
 	return indices;
 }
 
-vector<string> lee_nuevo_email(string nombreArchivo, vector<string>& diccionario)
-{
-	vector<string> palabras, nuevasPalabras;
-	string palabra;
-	ifstream entrada (nombreArchivo.c_str());
-
-	if (entrada.is_open())
-	{
-	  	while (!entrada.eof())
-		{
-			entrada >> palabra;
-			
-			if (palabra.length() > 3)
-	  		{
-	  			palabras.push_back(palabra);
-	  		}
-	  	}
-	  	entrada.close();
-	}
-	else
-  		cout << "ERROR al leer archivo\n";
-
-	return nuevasPalabras;
-}
-
-void imprime_resultados(vector<string>& palabras, vector<double>& probabilidades)
-{
-	string cadena;
-
-	for (int i=0; i < palabras.size(); i++)
-	{
-		cadena.append(" \"");
-		cadena.append(palabras[i]);
-		cadena.append("\"");
-	}
-
-	cout << "P(spam |" << cadena << ") = " << probabilidades[0] << endl;
-	cout << "P(no spam |" << cadena << ") = " << probabilidades[1] << endl;
-
-	if (probabilidades[0] > probabilidades[1])
-	{
-		cout << "\n\tEl e-mail se considera SPAM\n" << endl;
-	}
-	else
-	{
-		cout << "\n\tEl e-mail se considera NO SPAM\n" << endl;
-	}
-}
-
 int main()
 {
 	vector<double> matrizD, b, x;
 	vector<vector<double>> matrizTS, matrizTI, matrizC;
 	vector<int> indices;
-	int N, M;
+	int N, M, tipo;
 
-	//SISTEMA DIAGONAL
-	/*matrizD = lee_matriz_diagonal_sparse("TAREA2_MATRICES/DIAG_MAT500.txt", N, M);
-	b = lee_vector("TAREA2_MATRICES/DIAG_VEC500.txt", M);
-	x = resuelve_sistema_diagonal_sparse(matrizD, b, N);*/
+	cout << "\n1. Diagonal\n" << "2. Triangular inferior\n" << "3. Triangular superior\n" << "4. Completo\n" << "Tipo de sistema a resolver: ";
+	cin >> tipo;
 
-	//SISTEMA TRIANGULAR SUPERIOR
-	/*matrizTS = lee_matriz_triangular_superior_sparse("TAREA2_MATRICES/TSUP_MAT500.txt", N, M);
-	b = lee_vector("TAREA2_MATRICES/TSUP_VEC500.txt", M);
-	x = resuelve_sistema_triangular_superior_sparse(matrizTS, b, N, M);*/
+	switch (tipo)
+	{
+		case 1:
+		{
+			cout << "\nSistema DIAG4\n";
+			matrizD = lee_matriz_diagonal_sparse("TAREA2_MATRICES/DIAG_MAT4.txt", N, M);
+			b = lee_vector("TAREA2_MATRICES/DIAG_VEC4.txt", M);
+			x = resuelve_sistema_diagonal_sparse(matrizD, b, N);
+			cout << "\tNorma uno: " << norma_uno(x) << endl;
+			cout << "\tNorma infinito: " << norma_infinito(x) << endl;
 
-	//SISTEMA TRIANGULAR INFERIOR
-	/*matrizTI = lee_matriz_triangular_inferior_sparse("TAREA2_MATRICES/TINF_MAT4.txt", N, M);
-	b = lee_vector("TAREA2_MATRICES/TINF_VEC4.txt", M);
-	x = resuelve_sistema_triangular_inferior_sparse(matrizTI, b, N, M);*/
+			cout << "\nSistema DIAG100\n";
+			matrizD = lee_matriz_diagonal_sparse("TAREA2_MATRICES/DIAG_MAT100.txt", N, M);
+			b = lee_vector("TAREA2_MATRICES/DIAG_VEC100.txt", M);
+			x = resuelve_sistema_diagonal_sparse(matrizD, b, N);
+			cout << "\tNorma uno: " << norma_uno(x) << endl;
+			cout << "\tNorma infinito: " << norma_infinito(x) << endl;
 
-	//ELIMINACION GAUSSIANA
-	/*matrizC = lee_matriz_completa("TAREA2_MATRICES/FULL_MAT500.txt", N, M);
-	b = lee_vector("TAREA2_MATRICES/FULL_VEC500.txt", M);
-	eliminacion_gaussiana(matrizC, b, N, M);
-	x = resuelve_sistema_triangular_superior_completo(matrizC, b, N, M);*/
+			cout << "\nSistema DIAG500\n";
+			matrizD = lee_matriz_diagonal_sparse("TAREA2_MATRICES/DIAG_MAT500.txt", N, M);
+			b = lee_vector("TAREA2_MATRICES/DIAG_VEC500.txt", M);
+			x = resuelve_sistema_diagonal_sparse(matrizD, b, N);
+			cout << "\tNorma uno: " << norma_uno(x) << endl;
+			cout << "\tNorma infinito: " << norma_infinito(x) << endl;
 
-	/*matrizC = lee_matriz_completa("TAREA2_MATRICES/FULL_MAT500.txt", N, M);
-	b = lee_vector("TAREA2_MATRICES/FULL_VEC500.txt", M);
-	indices = eliminacion_gaussiana_pivoteo(matrizC, b, N, M);
-	x = resuelve_sistema_triangular_superior_completo(matrizC, b, N, M);*/
+			break;
+		}
+		case 2:
+		{
+			cout << "\nSistema TINF4\n";
+			matrizTI = lee_matriz_triangular_inferior_sparse("TAREA2_MATRICES/TINF_MAT4.txt", N, M);
+			b = lee_vector("TAREA2_MATRICES/TINF_VEC4.txt", M);
+			x = resuelve_sistema_triangular_inferior_sparse(matrizTI, b, N, M);
+			cout << "\tNorma uno: " << norma_uno(x) << endl;
+			cout << "\tNorma infinito: " << norma_infinito(x) << endl;
 
-	//imprime_matriz_completa(matrizC, N, M);
-	//imprime_vector(x);
-	//imprime_vector(indices);
+			cout << "\nSistema TINF100\n";
+			matrizTI = lee_matriz_triangular_inferior_sparse("TAREA2_MATRICES/TINF_MAT100.txt", N, M);
+			b = lee_vector("TAREA2_MATRICES/TINF_VEC100.txt", M);
+			x = resuelve_sistema_triangular_inferior_sparse(matrizTI, b, N, M);
+			cout << "\tNorma uno: " << norma_uno(x) << endl;
+			cout << "\tNorma infinito: " << norma_infinito(x) << endl;
+
+			cout << "\nSistema TINF500\n";
+			matrizTI = lee_matriz_triangular_inferior_sparse("TAREA2_MATRICES/TINF_MAT500.txt", N, M);
+			b = lee_vector("TAREA2_MATRICES/TINF_VEC500.txt", M);
+			x = resuelve_sistema_triangular_inferior_sparse(matrizTI, b, N, M);
+			cout << "\tNorma uno: " << norma_uno(x) << endl;
+			cout << "\tNorma infinito: " << norma_infinito(x) << endl;
+
+			break;
+		}
+		case 3:
+		{
+			cout << "\nSistema TSUP4\n";
+			matrizTS = lee_matriz_triangular_superior_sparse("TAREA2_MATRICES/TSUP_MAT4.txt", N, M);
+			b = lee_vector("TAREA2_MATRICES/TSUP_VEC4.txt", M);
+			x = resuelve_sistema_triangular_superior_sparse(matrizTS, b, N, M);
+			cout << "\tNorma uno: " << norma_uno(x) << endl;
+			cout << "\tNorma infinito: " << norma_infinito(x) << endl;
+
+			cout << "\nSistema TSUP100\n";
+			matrizTS = lee_matriz_triangular_superior_sparse("TAREA2_MATRICES/TSUP_MAT100.txt", N, M);
+			b = lee_vector("TAREA2_MATRICES/TSUP_VEC100.txt", M);
+			x = resuelve_sistema_triangular_superior_sparse(matrizTS, b, N, M);
+			cout << "\tNorma uno: " << norma_uno(x) << endl;
+			cout << "\tNorma infinito: " << norma_infinito(x) << endl;
+
+			cout << "\nSistema TSUP500\n";
+			matrizTS = lee_matriz_triangular_superior_sparse("TAREA2_MATRICES/TSUP_MAT500.txt", N, M);
+			b = lee_vector("TAREA2_MATRICES/TSUP_VEC500.txt", M);
+			x = resuelve_sistema_triangular_superior_sparse(matrizTS, b, N, M);
+			cout << "\tNorma uno: " << norma_uno(x) << endl;
+			cout << "\tNorma infinito: " << norma_infinito(x) << endl;
+
+			break;
+		}
+		case 4:
+		{
+			cout << "\nSistema FULL4\n";
+			matrizC = lee_matriz_completa("TAREA2_MATRICES/FULL_MAT4.txt", N, M);
+			b = lee_vector("TAREA2_MATRICES/FULL_VEC4.txt", M);
+			cout << "Eliminación gaussiana" << endl;
+			eliminacion_gaussiana(matrizC, b, N, M);
+			x = resuelve_sistema_triangular_superior_completo(matrizC, b, N, M);
+			cout << "\tNorma uno: " << norma_uno(x) << endl;
+			cout << "\tNorma infinito: " << norma_infinito(x) << endl;
+			matrizC = lee_matriz_completa("TAREA2_MATRICES/FULL_MAT4.txt", N, M);
+			b = lee_vector("TAREA2_MATRICES/FULL_VEC4.txt", M);
+			indices = eliminacion_gaussiana_pivoteo(matrizC, b, N, M);
+			x = resuelve_sistema_triangular_superior_completo(matrizC, b, N, M);
+			cout << "Eliminación gaussiana con pivoteo" << endl;
+			cout << "\tNorma uno: " << norma_uno(x) << endl;
+			cout << "\tNorma infinito: " << norma_infinito(x) << endl;
+
+			cout << "\nSistema FULL100\n";
+			matrizC = lee_matriz_completa("TAREA2_MATRICES/FULL_MAT100.txt", N, M);
+			b = lee_vector("TAREA2_MATRICES/FULL_VEC100.txt", M);
+			cout << "Eliminación gaussiana" << endl;
+			eliminacion_gaussiana(matrizC, b, N, M);
+			x = resuelve_sistema_triangular_superior_completo(matrizC, b, N, M);
+			cout << "\tNorma uno: " << norma_uno(x) << endl;
+			cout << "\tNorma infinito: " << norma_infinito(x) << endl;
+			matrizC = lee_matriz_completa("TAREA2_MATRICES/FULL_MAT100.txt", N, M);
+			b = lee_vector("TAREA2_MATRICES/FULL_VEC100.txt", M);
+			indices = eliminacion_gaussiana_pivoteo(matrizC, b, N, M);
+			x = resuelve_sistema_triangular_superior_completo(matrizC, b, N, M);
+			cout << "Eliminación gaussiana con pivoteo" << endl;
+			cout << "\tNorma uno: " << norma_uno(x) << endl;
+			cout << "\tNorma infinito: " << norma_infinito(x) << endl;
+
+			cout << "\nSistema FULL500\n";
+			matrizC = lee_matriz_completa("TAREA2_MATRICES/FULL_MAT500.txt", N, M);
+			b = lee_vector("TAREA2_MATRICES/FULL_VEC500.txt", M);
+			cout << "Eliminación gaussiana" << endl;
+			eliminacion_gaussiana(matrizC, b, N, M);
+			x = resuelve_sistema_triangular_superior_completo(matrizC, b, N, M);
+			cout << "\tNorma uno: " << norma_uno(x) << endl;
+			cout << "\tNorma infinito: " << norma_infinito(x) << endl;
+			matrizC = lee_matriz_completa("TAREA2_MATRICES/FULL_MAT500.txt", N, M);
+			b = lee_vector("TAREA2_MATRICES/FULL_VEC500.txt", M);
+			indices = eliminacion_gaussiana_pivoteo(matrizC, b, N, M);
+			x = resuelve_sistema_triangular_superior_completo(matrizC, b, N, M);
+			cout << "Eliminación gaussiana con pivoteo" << endl;
+			cout << "\tNorma uno: " << norma_uno(x) << endl;
+			cout << "\tNorma infinito: " << norma_infinito(x) << endl;
+
+			break;
+		}
+	}
 
 	return 0;
 }

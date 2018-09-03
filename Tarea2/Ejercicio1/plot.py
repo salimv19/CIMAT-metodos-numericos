@@ -10,6 +10,6 @@ args = vars(ap.parse_args())
 
 plt.axhline(0, color='k')
 plt.axvline(0, color='k')
-plt.plot(args["xVector"], args["yVector"])
+plt.plot(args["xVector"], args["yVector"], linewidth=3)
 plt.plot(args["xPoint"], args["yPoint"], "ro")
 plt.show() 
