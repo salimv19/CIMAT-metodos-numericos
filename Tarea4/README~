@@ -1,0 +1,9 @@
+README
+
+Compilar con:
+g++ -std=c++0x  solucion_matrices.cpp -o solucion_matrices
+
+Ejecutar con:
+./solucion_matrices
+
+Seguir instrucciones del menú

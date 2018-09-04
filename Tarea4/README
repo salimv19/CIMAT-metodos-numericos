@@ -1,0 +1,7 @@
+README
+
+Compilar con:
+g++ -std=c++0x  interpolacion.cpp -o interpolacion
+
+Ejecutar con:
+./interpolacion
