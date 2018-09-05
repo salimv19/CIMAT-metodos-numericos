@@ -22,7 +22,6 @@ void imprime_vector(vector<T>& vec)
 
 vector<vector<double>> lee_csv(string nombreArchivo)
 {
- 
     vector<vector<double>> data;
     ifstream entrada(nombreArchivo);
     int l = 0;
@@ -88,15 +87,25 @@ vector<double> lee_vector(string nombreArchivo, int& N)
 	return vector;
 }
 
-vector<vector<double>> interpolacion_lineal(vector<vector<double>>& data)
+vector<double> interpolacion_lineal(double x0, double x1, double f0, double f1)
 {
-	vector<vector<double>> coeficientes;
-	//
+	vector<double> coeficientes(2);
+	
+	coeficientes[0] = f0 - 1.0*x0*(f1-f0)/(x1-x0);
+	coeficientes[1] = 1.0*(f1-f0)/(x1-x0);
+
+	return coeficientes;
+}
+
+double ajusta_valor(vector<double>& coeficientes, double x)
+{
+	return coeficientes[0] + coeficientes[1]*x;
 }
 
 int main()
 {
 	vector<vector<double>> data;
+	vector<double> coeficientes, ajustados;
 
 	data = lee_csv("normal_data.csv");
 
@@ -108,6 +117,15 @@ int main()
 		}
 		cout << endl;
 	}
+
+	coeficientes = interpolacion_lineal(data[data.size()-1][0], 4.09, data[data.size()-1][1], data[data.size()-1][data[0].size()]);
+
+	for (int i=0; i < 10; i++)
+	{
+		ajustados.push_back(ajusta_valor(coeficientes, 4.0+0.01*i));
+	}
+
+
 
 	return 0;
 }
