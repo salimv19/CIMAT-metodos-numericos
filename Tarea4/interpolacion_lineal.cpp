@@ -65,26 +65,19 @@ vector<vector<double>> lee_csv(string nombreArchivo)
     return data;
 }
 
-vector<double> lee_vector(string nombreArchivo, int& N)
+void crea_archivo_errores(vector<vector<double>>& errores, string nombreArchivo)
 {
-	vector<double> vector;
-	double auxNum;
-	ifstream entrada (nombreArchivo.c_str());
-
-	if (entrada.is_open())
+	ofstream salida;
+	salida.open(nombreArchivo.c_str());
+	for (auto l:errores)
 	{
-  		entrada >> N;
-	  	for (int i=0; i < N; i++)
-	  	{
-	  		entrada >> auxNum;
-	  		vector.push_back(auxNum);
-	  	}
-	  	entrada.close();
+		for (auto x:l)
+		{
+			salida << x << " ";
+		}
+		salida << endl;
 	}
-	else
-  		cout << "ERROR al leer archivo\n";
-	
-	return vector;
+    salida.close();
 }
 
 vector<double> interpolacion_lineal(double x0, double x1, double f0, double f1)
@@ -102,30 +95,59 @@ double ajusta_valor(vector<double>& coeficientes, double x)
 	return coeficientes[0] + coeficientes[1]*x;
 }
 
+vector<double> calcula_errores(vector<double>& ajustados, vector<double>& reales)
+{
+	vector<double> errores;
+
+	for (int i=0; i < ajustados.size(); i++)
+	{
+		errores.push_back(fabs(ajustados[i] - reales[i+1]));
+	}
+
+	return errores;
+}
+
+double promedia_error(vector<vector<double>>& errores, int nFilas, int nColumnas)
+{
+	double suma;
+	for (int i=0; i < nFilas; i++)
+		for (int j=0; j < nColumnas; j++)
+			suma = suma + errores[i][j];
+	return suma/(nFilas*nColumnas);
+}
+
 int main()
 {
-	vector<vector<double>> data;
+	vector<vector<double>> data, errores;
 	vector<double> coeficientes, ajustados;
+	int nFilas, nColumnas;
 
 	data = lee_csv("normal_data.csv");
 
-	for (auto l:data)
+	nFilas = data.size();
+	nColumnas = data[0].size();
+	
+	for (int i=0; i < nFilas - 1; i++)
 	{
-		for (auto x:l)
+		coeficientes = interpolacion_lineal(data[i][0], data[i+1][0], data[i][1], data[i+1][1]);
+		for (int j=0; j < nColumnas-1; j++)
 		{
-			cout << x << " ";
+			ajustados.push_back(ajusta_valor(coeficientes, data[i][0]+0.01*j));
 		}
-		cout << endl;
+		errores.push_back(calcula_errores(ajustados, data[i]));
+		ajustados.clear();
 	}
 
-	coeficientes = interpolacion_lineal(data[data.size()-1][0], 4.09, data[data.size()-1][1], data[data.size()-1][data[0].size()]);
-
-	for (int i=0; i < 10; i++)
+	coeficientes = interpolacion_lineal(data[nFilas-1][0], 4.09, data[nFilas-1][1], data[nFilas-1][nColumnas]);
+	for (int i=0; i < nColumnas-1; i++)
 	{
 		ajustados.push_back(ajusta_valor(coeficientes, 4.0+0.01*i));
 	}
+	errores.push_back(calcula_errores(ajustados, data[nFilas-1]));
 
+	crea_archivo_errores(errores, "error_ajuste.dat");
 
+	cout << "\n\tError promedio = " << promedia_error(errores, nFilas, nColumnas-1) << endl << endl;
 
 	return 0;
 }
