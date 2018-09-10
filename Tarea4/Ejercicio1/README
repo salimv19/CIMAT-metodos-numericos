@@ -1,0 +1,23 @@
+README
+
+interpolacion_lineal.cpp
+
+Salim Vargas
+Septiembre 2018
+
+El programa ajusta un modelo de interpolación lineal
+utilizando como conjunto de entrada las primeras dos columnas del archivo "normal_data.csv" 
+posteriormente prueba la precisión de la interpolación con el resto de las columnas del archivo.
+
+El programa genera un archivo "error_ajuste.dat" con los errores absolutos resultantes de 
+utilizar la función interpolante en el resto de los datos.
+
+El programa se compila con el comando:
+g++ -std=c++0x interpolacion_lineal.cpp -o interpolacion_lineal
+
+Creando un ejecutable de nombre "interpolacion_lineal"
+
+El programa se ejecuta con el comando:
+./interpolacion_lineal
+
+En la consola se imprime el Error Absoluto Promedio del total de la tabla.

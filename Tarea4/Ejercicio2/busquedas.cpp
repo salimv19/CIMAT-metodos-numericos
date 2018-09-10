@@ -2,12 +2,17 @@
 #include <fstream>
 #include <sstream>
 #include <string>
-//#include <algorithm>
 #include <vector>
 #include <cmath>
 #include <numeric>
-//#include <typeinfo>
-//#include <map>
+
+/*
+Salim Vargas Hernández
+Métodos numéricos
+Tarea 4
+Interpolación lineal
+Septiembre 2018
+*/
 
 using namespace std;
 
@@ -71,9 +76,11 @@ int busqueda_binaria(vector<double>& vector, double& valor, int indiceA, int ind
 
 	if (valor >= vector[indiceA] && valor <= vector[indiceB])
 	{
-		while(indiceB - indiceA > 1)
+		//El valor está dentro de los límites de valores del vector
+		while(indiceB - indiceA > 1) //Mientras el valor no esté encerrado en un solo intervalo
 		{
-			indiceM = indiceA + (indiceB - indiceA)/2;
+			indiceM = indiceA + (indiceB - indiceA)/2; //Cálculo del punto medio
+			//Ajuste de los límites dependiendo de la posición del valor a buscar
 			if (valor > vector[indiceM])
 				indiceA = indiceM;
 			else
@@ -82,33 +89,49 @@ int busqueda_binaria(vector<double>& vector, double& valor, int indiceA, int ind
 	}
 	else
 	{
-		cout << "\tValor fuera del intervalo\n";
+		cout << "\tCUIDADO. Valor fuera del intervalo, se usará extrapolación\n";
+		if (valor > vector[indiceB])
+			indiceA = indiceB-1; //Extrapolación usando el último intervalo
 	}
 	return indiceA;
 }
 
 int hunting_search(vector<double>& vector, double& valor, int indiceAprox)
 {
-	int indiceH, paso;
+	int paso, longVec;
 
+	longVec = vector.size();
 	paso = 1;
-	if (valor < vector[indiceAprox])
+	if (valor >= vector[0] && valor <= vector[longVec - 1])
 	{
-		while (valor < vector[indiceAprox-paso])
+		if (valor < vector[indiceAprox])
 		{
-			indiceAprox = indiceAprox - paso;
-			paso = 2*paso;
+			while (valor < vector[max(indiceAprox - paso, 0)]) //Mientras el nuevo índice aún no abarque al valor buscado
+			{
+				indiceAprox = max(indiceAprox - paso, 0); //Se usa max para evitar que el índice salga de los límites del vector
+				paso = 2*paso;
+			}
+			//Se realiza búsqueda binaria sobre el intervalo que contiene al valor
+			return busqueda_binaria(vector, valor, max(indiceAprox - paso, 0), indiceAprox);
 		}
-		return busqueda_binaria(vector, valor, indiceAprox - paso, indiceAprox);
+		else
+		{
+			while (valor > vector[min(indiceAprox + paso, longVec - 1)]) //Mientras el nuevo índice aún no abarque al valor buscado
+			{
+				indiceAprox = min(indiceAprox + paso, longVec - 1); //Se usa min para evitar que el índice salga de los límites del vector
+				paso = 2*paso;
+			}
+			//Se realiza búsqueda binaria sobre el intervalo que contiene al valor
+			return busqueda_binaria(vector, valor, indiceAprox, min(indiceAprox + paso, longVec - 1));
+		}
 	}
 	else
 	{
-		while (valor > vector[indiceAprox+paso])
-		{
-			indiceAprox = indiceAprox + paso;
-			paso = 2*paso;
-		}
-		return busqueda_binaria(vector, valor, indiceAprox, indiceAprox + paso);
+		cout << "\tCUIDADO. Valor fuera del intervalo, se usará extrapolación\n";
+		if (valor > vector[longVec - 1])
+			return longVec-2; //Extrapolación usando el último intervalo
+		else
+			return 0; //Extrapolación usando el primer intervalo
 	}
 }
 
@@ -140,13 +163,16 @@ int main()
 	nFilas = data.size();
 	nColumnas = data[0].size();
 	
+	//El vector de búsqueda estará formado por los números del 0.0 al 4.0 en intervalos de 0.1 [0, 0.1, 0.2, 0.3, ... ,4.0]
 	for (int i=0; i < nFilas; i++)
 		vectorBusqueda.push_back(data[i][0]);
 
 	cout << "\nIngrese un valor entre " << vectorBusqueda[0] << " y " << vectorBusqueda[nFilas-1] << ": ";
 	cin >> valor;
 
+	//Como es el primer valor, se realiza una búsqueda binaria
 	indice = busqueda_binaria(vectorBusqueda, valor, 0, nFilas-1);
+	//Se obtienen los coeficientes de interpolación lineal para el intervalo en el que se encuentra el valor ingresado
 	coeficientes = interpolacion_lineal(data[indice][0], data[indice+1][0], data[indice][1], data[indice+1][1]);
 
 	cout << "\nEl valor aproximado para x = " << valor << " es ŷ = " << ajusta_valor(coeficientes, valor) << endl;
@@ -159,7 +185,9 @@ int main()
 		cout << "\nIngrese un valor entre " << vectorBusqueda[0] << " y " << vectorBusqueda[nFilas-1] << ": ";
 		cin >> valor;
 
+		//Se toma el índice anterior como aproximación para el nuevo y se realiza hunting search
 		indice = hunting_search(vectorBusqueda, valor, indice);
+		//Se obtienen los coeficientes para el nuevo intervalo
 		coeficientes = interpolacion_lineal(data[indice][0], data[indice+1][0], data[indice][1], data[indice+1][1]);
 
 		cout << "\nEl valor aproximado para x = " << valor << " es ŷ = " << ajusta_valor(coeficientes, valor) << endl;

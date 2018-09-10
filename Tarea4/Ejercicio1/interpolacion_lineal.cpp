@@ -2,12 +2,17 @@
 #include <fstream>
 #include <sstream>
 #include <string>
-//#include <algorithm>
 #include <vector>
 #include <cmath>
 #include <numeric>
-//#include <typeinfo>
-//#include <map>
+
+/*
+Salim Vargas Hernández
+Métodos numéricos
+Tarea 4
+Interpolación lineal
+Septiembre 2018
+*/
 
 using namespace std;
 
@@ -110,6 +115,7 @@ vector<double> calcula_errores(vector<double>& ajustados, vector<double>& reales
 double promedia_error(vector<vector<double>>& errores, int nFilas, int nColumnas)
 {
 	double suma;
+	suma = 0.0;
 	for (int i=0; i < nFilas; i++)
 		for (int j=0; j < nColumnas; j++)
 			suma = suma + errores[i][j];
@@ -127,18 +133,19 @@ int main()
 	nFilas = data.size();
 	nColumnas = data[0].size();
 	
-	for (int i=0; i < nFilas - 1; i++)
+	for (int i=0; i < nFilas - 1; i++) //Interpolación por saltos de 0.1
 	{
 		coeficientes = interpolacion_lineal(data[i][0], data[i+1][0], data[i][1], data[i+1][1]);
-		for (int j=0; j < nColumnas-1; j++)
+		for (int j=0; j < nColumnas-1; j++) //Ajuste para los datos del intervalo en saltos de 0.01
 		{
 			ajustados.push_back(ajusta_valor(coeficientes, data[i][0]+0.01*j));
 		}
-		errores.push_back(calcula_errores(ajustados, data[i]));
+		errores.push_back(calcula_errores(ajustados, data[i])); //Cálculo de los errores absolutos
 		ajustados.clear();
 	}
 
-	coeficientes = interpolacion_lineal(data[nFilas-1][0], 4.09, data[nFilas-1][1], data[nFilas-1][nColumnas]);
+	//Interpolación para la última fila del documento, entre 4.0 y 4.09
+	coeficientes = interpolacion_lineal(data[nFilas-1][0], 4.09, data[nFilas-1][1], data[nFilas-1][nColumnas-1]);
 	for (int i=0; i < nColumnas-1; i++)
 	{
 		ajustados.push_back(ajusta_valor(coeficientes, 4.0+0.01*i));
@@ -147,7 +154,7 @@ int main()
 
 	crea_archivo_errores(errores, "error_ajuste.dat");
 
-	cout << "\n\tError promedio = " << promedia_error(errores, nFilas, nColumnas-1) << endl << endl;
+	cout << "\n\tError absoluto promedio = " << promedia_error(errores, nFilas, nColumnas-1) << endl << endl;
 
 	return 0;
 }

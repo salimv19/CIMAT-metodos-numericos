@@ -1,0 +1,28 @@
+README
+
+busquedas.cpp
+
+Salim Vargas
+Septiembre 2018
+
+El programa ajusta un modelo de interpolación lineal
+utilizando como conjunto de entrada las primeras dos columnas del archivo "normal_data.csv". 
+
+El programa permite al usuario aproximar los valores de la función para distintos valores 
+de x ingresados por consola.
+
+El programa se compila con el comando:
+g++ -std=c++0x busquedas.cpp -o busquedas
+
+Creando un ejecutable de nombre "busquedas"
+
+El programa se ejecuta con el comando:
+./busquedas
+
+En la consola se pide al usuario un valor para x entre 0 y 4.
+El programa imprime el valor aproximado para y.
+
+El usuario puede ingresar tantos valores como quiera hasta una condición de paro.
+
+Si se ingresa un valor fuera del rango, se emite un mensaje de advertencia, y para la 
+estimación se utiliza extrapolación a partir del primer o último intervalo.
