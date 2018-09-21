@@ -1,0 +1,18 @@
+README
+
+cholesky.cpp
+
+El programa implementa la factorización modificada de Cholesky para la 
+resolución de un sistema de ecuaciones.
+
+Los datos de obtienen de los archivos MAT*.txt y VEC*.txt
+
+El programa se compila con el comando:
+g++ -std=c++0x -v cholesky.cpp -o cholesky
+
+Creando un ejecutable de nombre "cholesky"
+
+El programa se ejecuta con el comando:
+./cholesky
+
+En la consola se imprime el vector solución x.

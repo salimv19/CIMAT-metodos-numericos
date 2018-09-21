@@ -1,0 +1,20 @@
+README
+
+ecuacion_calor.cpp
+
+El programa resuelve la ecuación de calor hasta la convergencia en una barra
+de longitud 9 con condiciones inicial y final igual a 0
+
+El programa se compila con el comando:
+g++ -std=c++0x -v ecuacion_calor.cpp -o ecuacion_calor
+
+Creando un ejecutable de nombre "ecuacion_calor"
+
+El programa se ejecuta con el comando:
+./ecuacion_calor
+
+En la consola se imprime el numero de iteraciones necesario hasta la convergencia.
+
+Se genera también una gráfica con la curva ajustada.
+
+Para terminar la ejecución del programa, se debe cerrar la ventana de la gráfica.

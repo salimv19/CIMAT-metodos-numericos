@@ -28,7 +28,31 @@ void imprime_vector(vector<T> vec)
 
 void grafica_solucion(vector<vector<double>>& puntos)
 {
-	//
+	string comando, xVec, yVec;
+	double paso;
+
+	comando = "python plot.py -n " + to_string(puntos.size()) + " ";
+
+	for (int i=0; i < puntos.size(); i++)
+	{
+		xVec = "-x" + to_string(i+1) + " 0.0 ";
+		yVec = "-y" + to_string(i+1) + " 0.0 ";
+
+		paso = 9.0/(puntos[i].size()+1);
+
+		for (int j=1; j <= puntos[i].size(); j++)
+		{
+			xVec = xVec + to_string(0.0 + j*paso) + " ";
+			yVec = yVec + to_string(puntos[i][j-1]) + " ";
+		}
+
+		xVec = xVec + "9.0 ";
+		yVec = yVec + "0.0 ";
+
+		comando = comando + xVec + yVec;
+	}
+
+	system(comando.c_str());
 }
 
 bool factoriza_tridiagonal(vector<vector<double>>& A, vector<double>& alpha, vector<double>& beta, vector<double>& gamma)
@@ -115,7 +139,7 @@ int main()
 	k = 2.0;
 	N = 2;
 	iter = 0;
-	toler = 1e-2;
+	toler = 0.05;
 
 	do
 	{
@@ -138,9 +162,7 @@ int main()
 
 	grafica_solucion(puntos);
 
-	cout << x[N/4] << endl;
-
-	cout << iter << endl;
+	cout << "Número de iteraciones = " << iter << endl;
 
 	return 0;
 }

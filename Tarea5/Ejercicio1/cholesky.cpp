@@ -261,9 +261,10 @@ int main()
 	y = resuelve_sistema_diagonal_sparse(D, z, N);
 	x = resuelve_sistema_triangular_superior_completo(LT, y, N, M);
 
-	imprime_vector(producto_matriz_vector(matrizA, x, N, M)); cout << endl << endl;
+	//imprime_vector(producto_matriz_vector(matrizA, x, N, M)); cout << endl << endl;
 
-	imprime_vector(b); cout << endl << endl; imprime_vector(x);
+	//imprime_vector(b); cout << endl << endl; 
+	imprime_vector(x);
 
 	return 0;
 }
