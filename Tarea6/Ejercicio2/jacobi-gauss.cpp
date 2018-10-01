@@ -85,7 +85,30 @@ double norma_dos(vector<double> x, int N)
 		norma = norma + pow(fabs(x[i]),2);
 	}
 
-	return norma;
+	return sqrt(norma);
+}
+
+bool diagonalmente_dominante(vector<vector<double>>& A, int& N, int& M)
+{
+	double suma;
+	bool dominante;
+
+	dominante = true;
+
+	for (int i=0; i < N; i++)
+	{
+		suma = 0;
+		for (int j=0; j < M; j++)
+			if (j != i)
+				suma = suma + fabs(A[i][j]);
+		if (suma > fabs(A[i][i]))
+		{
+			dominante = false;
+			break;
+		}
+	}
+
+	return dominante;
 }
 
 bool metodo_jacobi(vector<vector<double>>& A, vector<double>& b, vector<double>& x, int& N, int& maxIt, double& tolerancia)
@@ -160,7 +183,7 @@ bool metodo_gauss_seidel(vector<vector<double>>& A, vector<double>& b, vector<do
 			if (A[i][i] != 0)
 			{
 				aux[i] = (b[i] - sumaA - sumaB)/A[i][i];
-			}
+			} 
 			else
 				converge = false;
 		}
@@ -192,6 +215,11 @@ int main()
 
 	vector<double> x(N);
 
+	if(!diagonalmente_dominante(matrizA, N, M))
+	{
+		cout << "\n\tMatriz NO dominante en la diagonal, los métodos pueden no converger\n\n";
+	}
+
 	if(metodo_jacobi(matrizA, b, x, N, maxIt, tolerancia))
 	{
 		cout << "\n\tMÉTODO DE JACOBI\n";
@@ -207,6 +235,8 @@ int main()
 		cout << "\t||x||_inf = " << norma_infinito(x) << endl;
 		cout << "\n\t||Ax - b||_2 = " << norma_dos(resta_vectores(producto_matriz_vector(matrizA, x, N, M), b, M), M) << endl << endl;
 	}
+
+	//IOMatrices::imprime_vector(x);
 
 	return 0;
 }

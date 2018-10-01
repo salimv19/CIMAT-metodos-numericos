@@ -1,0 +1,21 @@
+README
+
+main.cpp
+MetodoPotencia.cpp
+MetodoPotencia.h
+IOMatrices.cpp
+IOMatrices.h
+
+El programa implementa el método de la potencia para encontrar el eigenvalor de mayor magnitud en valor absoluto de la matriz especificada en la consola.
+
+El programa se compila con el comando:
+g++ -std=c++0x main.cpp MetodoPotencia.cpp IOMatrices.cpp -o main
+
+Creando un ejecutable de nombre "main"
+
+El programa se ejecuta con el comando:
+./main
+
+Se pide al usuario el nombre del archivo que contiene la matriz A.
+
+En la consola se imprime el eigenvalor de mayor magnitud, el número de iteraciones requeridas y la tolerancia utilizada.

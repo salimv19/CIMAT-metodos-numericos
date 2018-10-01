@@ -1,0 +1,23 @@
+README
+
+main.cpp
+MetodoPotenciaInversa.cpp
+MetodoPotenciaInversa.h
+IOMatrices.cpp
+IOMatrices.h
+
+El programa implementa el método de la potencia inversa para encontrar el eigenvalor de menor magnitud en valor absoluto de la matriz especificada en la consola.
+
+El programa se compila con el comando:
+g++ -std=c++0x main.cpp MetodoPotenciaInversa.cpp IOMatrices.cpp -o main
+
+Creando un ejecutable de nombre "main"
+
+El programa se ejecuta con el comando:
+./main
+
+Se pide al usuario el nombre del archivo que contiene la matriz A.
+
+En la consola se imprime el eigenvalor de menor magnitud, el número de iteraciones requeridas y la tolerancia utilizada.
+
+Si la matriz A no es invertible se imprime un mensaje de error.

@@ -1,0 +1,22 @@
+README
+
+jacobi_gauss.cpp
+IOMatrices.cpp
+IOMatrices.h
+
+El programa resuelve los sistemas de ecuaciones contenido en la carpeta
+TAREA06_SISTEMAS usando los métodos iterativos de Jacobi y Gauss-Seidel
+
+El programa se compila con el comando:
+g++ -std=c++0x -v jacobi_gauss.cpp IOMatrices.cpp -o jacobi_gauss
+
+Creando un ejecutable de nombre "jacobi_gauss"
+
+El programa se ejecuta con el comando:
+./jacobi_gauss
+
+En la consola se imprime la norma 1 e infinito del vector solución, 
+así como la norma 2 del error Ax-b
+
+Si la matriz A no es dominante en la diagonal, se imprime una 
+advertencia sobre el posible comportamiento de los métodos.

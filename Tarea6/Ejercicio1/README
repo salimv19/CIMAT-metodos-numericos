@@ -1,0 +1,17 @@
+README
+
+elemento_finito.cpp
+
+El programa interpola la función e^-x usando el método de elemento finito
+
+El programa se compila con el comando:
+g++ -std=c++0x elemento_finito.cpp -o elemento_finito
+
+Creando un ejecutable de nombre "elemento_finito"
+
+El programa se ejecuta con el comando:
+./elemento_finito
+
+Se generan gráficas de la interpolación lineal, cuadrática y cúbica sobre 128 puntos.
+
+Para continuar y terminar la ejecución del programa, se debe cerrar la ventana de la gráfica.

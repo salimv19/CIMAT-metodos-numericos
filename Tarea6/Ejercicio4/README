@@ -1,0 +1,20 @@
+README
+
+splines.cpp
+
+El programa interpola la función e^-x usando splines cúbicos
+
+El programa se compila con el comando:
+g++ -std=c++0x -v splines.cpp -o splines
+
+Creando un ejecutable de nombre "splines"
+
+El programa se ejecuta con el comando:
+./splines
+
+Se interpola la función a partir de 15 puntos y se prueba el resultado 
+interpolando 128 puntos nuevos.
+
+Se genera también una gráfica con la curva ajustada.
+
+Para terminar la ejecución del programa, se debe cerrar la ventana de la gráfica.
