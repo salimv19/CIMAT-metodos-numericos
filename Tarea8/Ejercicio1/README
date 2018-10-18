@@ -1,0 +1,23 @@
+README
+
+main.cpp
+AlgebraLineal.cpp
+AlgebraLineal.h
+IOMatrices.cpp
+IOMatrices.h
+
+El programa implementa el método de Jacobi para el cálculo de los valores y vectores propios de una matriz.
+
+El programa se compila con el comando:
+g++ -std=c++0x main.cpp AlgebraLineal.cpp IOMatrices.cpp -o main
+
+Creando un ejecutable de nombre "main"
+
+El programa se ejecuta con el comando:
+./main
+
+Se pide al usuario el nombre del archivo que contiene la matriz A. Esta matriz debe ser simétrica.
+
+Se pide también la tolerancia del método y el número máximo de iteraciones.
+
+Si el método logró converger se imprimen los eigenvalores encontrados.

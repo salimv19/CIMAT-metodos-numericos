@@ -1,13 +1,12 @@
 #include <iostream>
+#include <fstream>
+#include <sstream>
+#include <algorithm>
+#include <string>
+#include <vector>
+#include <cmath>
+#include <numeric>
 #include "AlgebraLineal.h"
-
-/*
-Salim Vargas Hernández
-Programación y Algoritmos
-Tarea 3
-Redes neuronales
-Septiembre 2018
-*/
 
 using namespace std;
 
@@ -17,6 +16,44 @@ AlgebraLineal::AlgebraLineal()
 
 AlgebraLineal::~AlgebraLineal()
 {
+}
+
+bool AlgebraLineal::abs_compare(double a, double b)
+{
+    return (fabs(a) < fabs(b));
+}
+
+double AlgebraLineal::producto_punto(vector<double> vec1, vector<double> vec2)
+{
+	double productoPunto;
+
+	productoPunto = 0;
+
+	for (int i=0; i < vec1.size(); i++)
+		productoPunto = productoPunto + vec1[i]*vec2[i];
+
+	return productoPunto;
+}
+
+vector<double> AlgebraLineal::producto_matriz_vector(vector<vector<double>>& A, vector<double>& vec, int& N, int& M)
+{
+	vector<double> res(M);
+	for (int i=0; i < N; i++)
+		res[i] = AlgebraLineal::producto_punto(A[i], vec);
+	return res;
+}
+
+
+vector<double> AlgebraLineal::resta_vectores(vector<double> vecA, vector<double>& vecB, int& N)
+{
+	vector<double> resta(N);
+
+	for (int i=0; i < N; i++)
+	{
+		resta[i] = vecA[i] - vecB[i];
+	}
+
+	return resta;
 }
 
 double AlgebraLineal::norma_uno(vector<double>& x)
@@ -44,227 +81,58 @@ double AlgebraLineal::norma_infinito(vector<double>& x)
 	return norma;
 }
 
-double AlgebraLineal::producto_punto(vector<double>& vec1, vector<double>& vec2)
+double AlgebraLineal::norma_dos(vector<double> x, int N)
 {
-	double productoPunto;
+	double norma;
 
-	productoPunto = 0;
-
-	for (int i=0; i < vec1.size(); i++)
-		productoPunto = productoPunto + vec1[i]*vec2[i];
-
-	return productoPunto;
-}
-
-vector<int> AlgebraLineal::encuentra_mayor_matriz(vector<vector<double>>& matriz, int& N, int& M, int& fila, int& columna)
-{
-	vector<int> posicion;
-	double mayor;
-
-	posicion = {0,0};
-	mayor = 0.0;
-
-	for (int i=fila; i < N; i++)
-	{
-		for (int j=columna; j < M; j++)
-		{
-			if (fabs(matriz[i][j]) > mayor)
-			{
-				posicion = {i,j};
-				mayor = fabs(matriz[i][j]);
-			}
-		}
-	}
-
-	return posicion;
-}
-
-vector<double> AlgebraLineal::resuelve_sistema_diagonal_sparse(vector<double>& matriz, vector<double>& b, int& N)
-{
-	vector<double> x(N);
-	
+	norma = 0;
 	for (int i=0; i < N; i++)
 	{
-		if (matriz[i] != 0)
-		{
-			x[i] = b[i]/matriz[i];
-		}
-		else
-		{
-			cout << "\tERROR. Los elementos de la diagonal contienen ceros\n";
-			break;
-		}
+		norma = norma + pow(fabs(x[i]),2);
 	}
 
-	return x;
+	return sqrt(norma);
 }
 
-vector<double> AlgebraLineal::resuelve_sistema_triangular_superior_sparse(vector<vector<double>>& matriz, vector<double>& b, int& N, int& M)
+void AlgebraLineal::normaliza_vector(vector<double>& x, int N)
 {
-	vector<double> x(N);
-	double suma;
-	
+	double maximo;// cout << max_element(x.begin(), x.end()) << " ";
+
+	maximo = x[distance(x.begin(), max_element(x.begin(), x.end(), abs_compare))]; //cout << maximo << endl;
+
 	for (int i=0; i < N; i++)
-	{
-		if (matriz[N-1-i][0] != 0)
-		{
-			suma = 0;
-			for (int j=0; j < i; j++)
-			{
-				suma = suma + matriz[N-1-i][i-j]*x[N-1-j];
-			}
-			x[N-1-i] = (b[N-1-i] - suma)/matriz[N-1-i][0];
-		}
-		else
-		{
-			cout << "\tERROR. Los elementos de la diagonal contienen ceros\n";
-			break;
-		}
-	}
-
-	return x;
+		x[i] = 1.0 * x[i] / maximo;
 }
 
-vector<double> AlgebraLineal::resuelve_sistema_triangular_superior_completo(vector<vector<double>>& matriz, vector<double>& b, int& N, int& M)
+bool AlgebraLineal::metodo_potencia(vector<vector<double>>& A, vector<double>& x, double& eigenvalor, int& N, double& tolerancia, int& maxIter, int& iteraciones)
 {
-	vector<double> x(N);
-	double suma;
-	
-	for (int i=0; i < N; i++)
+	vector<double> aux;
+	double eigValAnt;
+	int iter;
+	bool resp;
+
+	iter = 0;
+	resp = true;
+
+	do
 	{
-		if (matriz[N-1-i][N-1-i] != 0)
-		{
-			suma = 0;
-			for (int j=0; j < i; j++)
-			{
-				suma = suma + matriz[N-1-i][N-1-j]*x[N-1-j];
-			}
-			x[N-1-i] = (b[N-1-i] - suma)/matriz[N-1-i][N-1-i];
-		}
-		else
-		{
-			cout << "\tERROR. Los elementos de la diagonal contienen ceros\n";
-			break;
-		}
-	}
+		eigValAnt = eigenvalor;
+		aux = x;
+		AlgebraLineal::normaliza_vector(aux, N);
+		iter = iter + 1;
+		x = AlgebraLineal::producto_matriz_vector(A, aux, N, N);
 
-	return x;
-}
+		eigenvalor = AlgebraLineal::producto_punto(aux, x)/AlgebraLineal::producto_punto(aux, aux);// cout << eigenvalor << endl;
+		//for (auto ix:x) cout << ix << " "; cout << endl;
 
-vector<double> AlgebraLineal::resuelve_sistema_triangular_inferior_sparse(vector<vector<double>>& matriz, vector<double>& b, int& N, int& M)
-{
-	vector<double> x(N);
-	double suma;
-	
-	for (int i=0; i < N; i++)
-	{
-		if (matriz[i][i] != 0)
-		{
-			suma = 0;
-			for (int j=0; j < i; j++)
-			{
-				suma = suma + matriz[i][j]*x[j];
-			}
-			x[i] = (b[i] - suma)/matriz[i][i];
-		}
-		else
-		{
-			cout << "\tERROR. Los elementos de la diagonal contienen ceros\n";
-			break;
-		}
-	}
+	} while (fabs(fabs(eigenvalor) - fabs(eigValAnt)) > tolerancia && iter < maxIter);
 
-	return x;
-}
+	if (iter >= maxIter)
+		resp = false;
 
-void AlgebraLineal::eliminacion_gaussiana(vector<vector<double>>& matriz, vector<double>& b, int& N, int& M)
-{
-	double factor;
+	AlgebraLineal::normaliza_vector(x, N);// for (auto ix:x) cout << ix << " "; cout << endl;
+	iteraciones = iter;
 
-	for (int i=0; i < N-1; i++)
-	{
-		for (int j=i+1; j < N; j++)
-		{
-			if (matriz[i][i] != 0)
-			{
-				factor = matriz[j][i]/matriz[i][i];
-				for (int k=i; k < N; k++)
-				{
-					matriz[j][k] = matriz[j][k] - matriz[i][k]*factor;
-				}
-				b[j] = b[j] - b[i]*factor;
-			}
-			else
-			{
-				cout << "\tERROR. Los elementos de la diagonal contienen ceros\n";
-				break;
-			}
-		}
-	}
-}
-
-void AlgebraLineal::intercambia_renglon_columna(vector<vector<double>>& matriz, vector<int>& indices, vector<double>& b, int& N, int& M, int& renglonA, int& columnaA, int& renglonB, int& columnaB)
-{
-	vector<double> auxRenglon;
-	double aux;
-	int auxi;
-
-	//Intercambio de renglón
-	auxRenglon = matriz[renglonA];
-	matriz[renglonA] = matriz[renglonB];
-	matriz[renglonB] = auxRenglon;
-
-	aux = b[renglonA];
-	b[renglonA] = b[renglonB];
-	b[renglonB] = aux;
-
-	//Intercambio de columna
-	for (int i=0; i < M; i++)
-	{
-		aux = matriz[i][columnaA];
-		matriz[i][columnaA] = matriz[i][columnaB];
-		matriz[i][columnaB] = aux;
-	}
-	auxi = indices[columnaA];
-	indices[columnaA] = indices[columnaB];
-	indices[columnaB] = auxi;
-}
-
-vector<int> AlgebraLineal::eliminacion_gaussiana_pivoteo(vector<vector<double>>& matriz, vector<double>& b, int& N, int& M)
-{
-	vector <int> indices(N), indMayor;
-	double factor;
-
-	iota(indices.begin(), indices.end(), 0);
-
-	for (int i=0; i < N-1; i++)
-	{
-		//Pivoteo
-		indMayor = encuentra_mayor_matriz(matriz, N, M, i, i);
-		if (indMayor[0] != i & indMayor[1] != i)
-		{
-			intercambia_renglon_columna(matriz, indices, b, N, M, i, i, indMayor[0], indMayor[1]);
-		}
-		//Eliminacion gaussiana
-		for (int j=i+1; j < N; j++)
-		{
-			if (matriz[i][i] != 0)
-			{
-				factor = matriz[j][i]/matriz[i][i];
-				for (int k=i; k < N; k++)
-				{
-					matriz[j][k] = matriz[j][k] - matriz[i][k]*factor;
-				}
-				b[j] = b[j] - b[i]*factor;
-			}
-			else
-			{
-				cout << "\tERROR. Los elementos de la diagonal contienen ceros\n";
-				break;
-			}
-		}
-	}
-
-	return indices;
+	return resp;
 }
 

@@ -1,0 +1,23 @@
+README
+
+main.cpp
+OpenMP.cpp
+OpenMP.h
+
+El programa implementa 5 operaciones con vectores y matrices y compara 
+el rendimiendo con funciones paralelizadas con OpenMP
+
+El programa se compila con el comando:
+g++ -std=c++0x main.cpp OpenMP.cpp -o main
+
+Creando un ejecutable de nombre "main"
+
+El programa se ejecuta con el comando:
+./main
+
+Se muestra un menú con las operaciones disponibles.
+
+Se pide al usuario la magnitud del problema que desea resolver, los vectores y matrices son llenados con número aleatorios.
+
+Se imprime el desempeño de los métodos y se da la opción de continuar 
+con una nueva operación.

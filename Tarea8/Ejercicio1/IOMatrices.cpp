@@ -115,12 +115,14 @@ vector<vector<double>> IOMatrices::lee_matriz_triangular_inferior_sparse(string 
 	return matriz;
 }
 
-vector<vector<double>> IOMatrices::lee_matriz_completa(string nombreArchivo, int& N, int& M)
+bool IOMatrices::lee_matriz_completa(string nombreArchivo, vector<vector<double>>& matriz, int& N, int& M)
 {
-	vector<vector<double>> matriz;
 	vector<double> renglon;
 	double auxNum;
+	bool lectura;
 	ifstream entrada (nombreArchivo.c_str());
+
+	lectura = false;
 
 	if (entrada.is_open())
 	{
@@ -137,11 +139,12 @@ vector<vector<double>> IOMatrices::lee_matriz_completa(string nombreArchivo, int
 	  		renglon.clear();
 	  	}
 	  	entrada.close();
+	  	lectura = true;
 	}
 	else
   		cout << "ERROR al leer archivo\n";
 	
-	return matriz;
+	return lectura;
 }
 
 void IOMatrices::imprime_matriz_diagonal_superior_sparse(vector<vector<double>>& matriz, int& N, int& M)
