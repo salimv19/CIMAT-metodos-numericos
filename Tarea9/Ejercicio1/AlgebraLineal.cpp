@@ -390,3 +390,220 @@ bool AlgebraLineal::eigenvectores_subespacio(vector<vector<double>>& A, int& N, 
 
 	return converge;
 }
+
+vector<double> resuelve_sistema_triangular_superior_completo(vector<vector<double>>& matriz, vector<double>& b, int& N, int& M)
+{
+	vector<double> x(N);
+	double suma;
+	
+	for (int i=0; i < N; i++)
+	{
+		if (matriz[N-1-i][N-1-i] != 0)
+		{
+			suma = 0;
+			for (int j=0; j < i; j++)
+			{
+				suma = suma + matriz[N-1-i][N-1-j]*x[N-1-j];
+			}
+			x[N-1-i] = (b[N-1-i] - suma)/matriz[N-1-i][N-1-i];
+		}
+		else
+		{
+			cout << "\tERROR. Los elementos de la diagonal contienen ceros\n";
+			break;
+		}
+	}
+
+	return x;
+}
+
+vector<double> resuelve_sistema_triangular_inferior_sparse(vector<vector<double>>& matriz, vector<double>& b, int& N, int& M)
+{
+	vector<double> x(N);
+	double suma;
+	
+	for (int i=0; i < N; i++)
+	{
+		if (matriz[i][i] != 0)
+		{
+			suma = 0;
+			for (int j=0; j < i; j++)
+			{
+				suma = suma + matriz[i][j]*x[j];
+			}
+			x[i] = (b[i] - suma)/matriz[i][i];
+		}
+		else
+		{
+			cout << "\tERROR. Los elementos de la diagonal contienen ceros\n";
+			break;
+		}
+	}
+
+	return x;
+}
+
+bool factoriza_LU(vector<vector<double>>& A, vector<vector<double>>& L, vector<vector<double>>& U)
+{
+	double suma;
+	int i;
+	bool resp;
+
+	resp = true;
+	i = 0;
+
+	for (int i=0; i < A.size(); i++)
+	{
+		L[i][i] = 1.0;
+
+		suma = 0.0;
+		for (int k=0; k <= i-1; k++)
+			suma = suma + L[i][k]*U[k][i];
+		U[i][i] = A[i][i] - suma;
+
+		if (fabs(U[i][i]) > epsMaquina)
+		{
+			for (int j=i+1; j < A[i].size(); j++)
+			{
+				suma = 0.0;
+				for (int k=0; k <= i-1 ; k++)
+					suma = suma + L[i][k]*U[k][j];
+				U[i][j] = A[i][j] - suma;
+			}
+
+			for (int j=i+1; j < A[i].size(); j++)
+			{
+				suma = 0.0;
+				for (int k=0; k <= i-1 ; k++)
+					suma = suma + L[j][k]*U[k][i];
+				L[j][i] = (A[j][i] - suma)/U[i][i];
+			}
+		}
+		else
+		{
+			cout << "\n\tERROR. No se pudo factorizar LU\n\n";
+			resp = false;
+			break;
+		}
+	}
+
+	return resp;
+}
+
+bool resuelve_sistema_LU(vector<vector<double>>& A, vector<double>& b, vector<double>& x, int& N)
+{
+	vector<vector<double>> L(N, vector<double>(N)), U(N, vector<double>(N));
+	vector<double> y;
+	bool resp;
+
+	resp = true;
+
+	if (factoriza_LU(A, L, U))
+	{
+		y = resuelve_sistema_triangular_inferior_sparse(L, b, N, N);
+		x = resuelve_sistema_triangular_superior_completo(U, y, N, N);
+	}
+	else
+		resp = false;
+
+	return resp;
+}
+
+bool metodo_potencia_inversa(vector<vector<double>>& A, vector<double>& x, double& eigenvalor, int& N, double& tolerancia, int maxIter, int& iteraciones)
+{
+	vector<double> aux;
+	double eigValAnt;
+	int iter;
+	bool resp;
+
+	iter = 0;
+	resp = true;
+
+	do
+	{
+		eigValAnt = eigenvalor;
+		aux = x;
+		AlgebraLineal::normaliza_vector(aux, N);
+		iter = iter + 1;
+		if (resuelve_sistema_LU(A, aux, x, N))
+		{
+			eigenvalor = AlgebraLineal::producto_punto(aux, aux)/AlgebraLineal::producto_punto(aux, x);
+		}
+		else
+		{
+			eigenvalor = 0.0;
+			eigValAnt = 0.0;
+		}
+
+	} while (fabs(fabs(eigenvalor) - fabs(eigValAnt)) > tolerancia && iter < maxIter);
+
+	if (iter >= maxIter)
+		resp = false;
+
+	normaliza_vector_2(x, N);
+	iteraciones = iter;
+
+	return resp;
+}
+
+bool AlgebraLineal::eigenvectores_menores_subespacio(vector<vector<double>>& A, int& N, vector<vector<double>>& X, vector<vector<double>>& C, int& M, double& tolerancia, int& maxIter)
+{
+	vector<vector<double>> B, D, Q, R, auxA, proy;
+	vector<double> phi;
+	double lambda, tolJacobi;
+	int iter, itPotencia, itJacobi;
+	bool converge;
+
+	tolJacobi = 1e-5;
+	itJacobi = 100;
+
+	iter = 0;
+	converge = false;
+
+	do
+	{
+		iter = iter + 1;
+		// X^T * A * X = C
+		B = AlgebraLineal::producto_matriz_matriz(A, X, N, N, M);
+		C = AlgebraLineal::producto_matrizT_matriz(X, B, M, N, M);
+
+		//Encontramos los eigenvectores de C por el método de Jacobi
+		AlgebraLineal::metodo_jacobi_eigenvalores(C, D, Q, M, tolJacobi, itJacobi); cout << iter << " - "; for (int ind=0; ind < M; ind++) cout << D[ind][ind] << " "; cout << endl;
+		// R = C - D
+		R = AlgebraLineal::resta_matrices(C, D, M, M);
+		if (AlgebraLineal::norma_frobenius(R, M, M) <= tolerancia)
+		{
+			converge = true;
+		}
+		else
+		{
+			// Iteración X = X * Q
+			X = AlgebraLineal::producto_matriz_matriz(X, Q, N, M, N);
+			//Nos aseguramos que X sea ortonormal
+			X = AlgebraLineal::ortogonalizacion_gram_schmidt(X, N, M);
+
+			//auxA = A;
+			for (int vec=0; vec < M; vec++)
+			{
+				phi = AlgebraLineal::columna_indice(X, N, vec);
+				//Quitamos las proyecciones de los eigenvectores anteriores
+				for (int j=0; j < vec; j++)
+				{
+					phi = AlgebraLineal::resta_vectores(phi, AlgebraLineal::proyeccion_vector_vector(phi, AlgebraLineal::columna_indice(X, N, j), N),N);
+				}
+				//Realizamos una iteración del método de la potencia
+				//AlgebraLineal::metodo_potencia(A, phi, lambda, N, tolerancia, 1, itPotencia);
+				metodo_potencia_inversa(A, phi, lambda, N, tolerancia, 1, itPotencia);
+
+				//Reemplazamos el nuevo vector en X
+				for (int i=0; i < N; i++)
+					X[i][vec] = phi[i];
+			}
+
+			//Nos aseguramos que X sea ortonormal
+			X = AlgebraLineal::ortogonalizacion_gram_schmidt(X, N, M);
+		}
+	} while(!converge && iter < maxIter);
+
+	return converge;
+}

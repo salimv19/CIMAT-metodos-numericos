@@ -25,7 +25,7 @@ int main()
 		cout << "Máximo de iteraciones: ";
 		cin >> maxIter;
 		P = AlgebraLineal::inicializa_ortonormal(N, M);
-		if (AlgebraLineal::eigenvectores_subespacio(matrizA, N, P, D, M, tolerancia, maxIter))
+		if (AlgebraLineal::eigenvectores_menores_subespacio(matrizA, N, P, D, M, tolerancia, maxIter))
 		{
 			cout << "\nEigenvalores\n\t";
 			for (int i=0; i < M; i++)

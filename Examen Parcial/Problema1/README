@@ -1,0 +1,19 @@
+README
+
+main.cpp
+AlgebraLineal.cpp
+AlgebraLineal.h
+IOMatrices.cpp
+IOMatrices.h
+
+Problema 1
+
+El programa se compila con el comando:
+g++ -std=c++0x main.cpp AlgebraLineal.cpp IOMatrices.cpp -o main -O2
+
+Creando un ejecutable de nombre "main"
+
+El programa se ejecuta con el comando:
+./main A_1000.mtx b_1000.vec
+
+Se generan dos archivos con la matriz inversa y con el vector solución.

@@ -34,4 +34,5 @@ public:
 	static bool metodo_potencia(vector<vector<double>>& A, vector<double>& x, double& eigenvalor, int& N, double& tolerancia, int maxIter, int& iteraciones);
 	static bool metodo_jacobi_eigenvalores(vector<vector<double>>& A, vector<vector<double>>& C, vector<vector<double>>& P, int& N, double& tolerancia, int& maxIter);
 	static bool eigenvectores_subespacio(vector<vector<double>>& A, int& N, vector<vector<double>>& X, vector<vector<double>>& C, int& M, double& tolerancia, int& maxIter);
+	static bool eigenvectores_menores_subespacio(vector<vector<double>>& A, int& N, vector<vector<double>>& X, vector<vector<double>>& C, int& M, double& tolerancia, int& maxIter);
 };
