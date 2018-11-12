@@ -1,0 +1,23 @@
+README
+
+main.cpp
+AlgebraLineal.cpp
+AlgebraLineal.h
+
+El programa se compila con el comando:
+g++ -std=c++0x main.cpp AlgebraLineal.cpp -o main -O2
+
+Creando un ejecutable de nombre "main"
+
+El programa se ejecuta con el comando:
+./main n
+
+n es el exponente de 2^n que define el número máximo de puntos en los que 
+se dividirá el intervalo
+
+Se imprime el valor de la integral de 1/x entre 1 y 10 y el valor de 
+la integral de sin(x)/x entre -pi y pi
+
+Las integrales se aproximan por el método de Romberg con una precisión 
+del épsilon de la máquina, donde n es el número máximo de renglones de 
+la matriz generada por el método

@@ -1,0 +1,17 @@
+README
+
+main.cpp
+AlgebraLineal.cpp
+AlgebraLineal.h
+
+El programa se compila con el comando:
+g++ -std=c++0x main.cpp AlgebraLineal.cpp -o main -O2
+
+Creando un ejecutable de nombre "main"
+
+El programa se ejecuta con el comando:
+./main
+
+Se imprime el valor de distintas probabilidades normales de X Normal(0,3^2)
+
+Se aproximan estas probabilidades por cuadratura gaussiana para n = 2, 3, 4

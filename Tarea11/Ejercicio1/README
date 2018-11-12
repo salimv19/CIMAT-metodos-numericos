@@ -1,0 +1,17 @@
+README
+
+main.cpp
+AlgebraLineal.cpp
+AlgebraLineal.h
+IOMatrices.cpp
+IOMatrices.h
+
+El programa se compila con el comando:
+g++ -std=c++0x main.cpp AlgebraLineal.cpp IOMatrices.cpp -o main
+
+Creando un ejecutable de nombre "main"
+
+El programa se ejecuta con el comando:
+./main
+
+Se despliega una gŕafica con el polinomio interpolado

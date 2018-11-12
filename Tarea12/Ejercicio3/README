@@ -1,0 +1,21 @@
+README
+
+main.cpp
+AlgebraLineal.cpp
+AlgebraLineal.h
+
+El programa se compila con el comando:
+g++ -std=c++0x main.cpp AlgebraLineal.cpp -o main -O2
+
+Creando un ejecutable de nombre "main"
+
+El programa se ejecuta con el comando:
+./main nPuntos a b
+
+nPuntos es el número de puntos a muestrear
+
+a es la cota inferior del intervalo
+
+b es la cota superior del intervalo
+
+Se imprime el valor de la integral de 1/x entre a y b así como el error
